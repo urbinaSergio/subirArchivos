@@ -1,0 +1,169 @@
+{
+  "connections": [
+    {
+      "name": "connFactory1",
+      "qmGroup": "*QM1",
+      "temporaryQueueModel": "",
+      "secret": "nu0151001-topes-dev-mq-functional-adapters",
+      "applicationName": "ms_functional_adapter",
+      "outputConcurrency": 10,
+      "replyTimeOut": 10,
+      "ccdtBucketName": "nu0151001_top_ccdt_nodo1_dev.json",
+      "jksBucketName": "nu0151001_top_dev.jks",
+      "ccdtPath": "",
+      "jksPath": "/Users/nasuarez/temp/nu0151001_top_dev.jks"
+    },
+    {
+      "name": "connFactory2",
+      "qmGroup": "*QM1",
+      "temporaryQueueModel": "",
+      "secret": "nu0151001-topes-dev-mq-functional-adapters",
+      "applicationName": "ms_functional_adapter",
+      "outputConcurrency": 10,
+      "replyTimeOut": 10,
+      "ccdtBucketName": "nu0151001_top_ccdt_nodo2_dev.json",
+      "jksBucketName": "nu0151001_top_dev.jks",
+      "ccdtPath": "",
+      "jksPath": "/Users/nasuarez/temp/nu0151001_top_dev.jks"
+    }
+  ],
+  "queues" : [
+    {
+      "name" : "ORDER.REQUEST",
+      "connections": ["connFactory1","connFactory2"]
+    },
+    {
+      "name" : "ORDER.RESPONSE",
+      "connections": ["connFactory1","connFactory2"]
+    },
+    {
+      "name" : "ORDER2.REQUEST",
+      "connections": ["connFactory1","connFactory2"]
+    },
+    {
+      "name" : "ORDER2.RESPONSE",
+      "connections": ["connFactory1","connFactory2"]
+    }
+  ],
+  "listener": [
+    {
+      "name": "id1",
+      "queueRequest": "ORDER.REQUEST",
+      "queueResponse": "ORDER.RESPONSE"
+    },
+    {
+      "name": "id2",
+      "queueRequest": "ORDER2.REQUEST",
+      "queueResponse": "ORDER2.RESPONSE"
+    }
+  ],
+  "transactions": {
+    "TOPBASE0001": {
+      "listener" : "id1",
+      "template" : "{ \"data\": { \"code\": \"${payload?substring(11, 15)?trim}\", \"description\": \"${payload?substring(15, 115)?trim}\", \"topType\": \"${payload?substring(115, 215)?trim}\", \"state\": \"${payload?substring(215, 315)?trim}\", \"amount\": ${payload?substring(315, 332)?number?replace(\".\", \"\")?replace(\",\", \"\")}, \"numberOperations\":${payload?substring(332, 335)?number}, \"amountPeriodicity\": \"${payload?substring(335, 350)?trim}\", \"operationsPeriodicity\": \"${payload?substring(350, 365)?trim}\", \"currency\": \"${payload?substring(365, 465)?trim}\", \"visibility\": \"${payload?substring(465, 466)?replace(\"1\", \"true\")?replace(\"0\", \"false\")}\", \"user\": \"${payload?substring(466)}\" } }",
+      "target": "ms_top_base",
+      "queue": "send.create.top"
+    },
+    "TOPBASE0002": {
+      "listener" : "id1",
+      "template" : "{ \"data\": { \"code\": \"${payload?substring(11, 15)?trim}\", \"description\": \"${payload?substring(15, 115)?trim}\", \"topType\": \"${payload?substring(115, 215)?trim}\", \"state\": \"${payload?substring(215, 315)?trim}\", \"amount\": ${payload?substring(315, 332)?number?replace(\".\", \"\")?replace(\",\", \"\")}, \"numberOperations\":${payload?substring(332, 335)?number}, \"amountPeriodicity\": \"${payload?substring(335, 350)?trim}\", \"operationsPeriodicity\": \"${payload?substring(350, 365)?trim}\", \"currency\": \"${payload?substring(365, 465)?trim}\", \"visibility\": \"${payload?substring(465, 466)?replace(\"1\", \"true\")?replace(\"0\", \"false\")}\", \"user\": \"${payload?substring(466)}\" } }",
+      "target": "ms_top_base",
+      "queue": "send.update.top"
+    },
+    "TOPTRX00001": {
+      "listener" : "id1",
+      "template" : "{ \"data\": { \"codeTop\": \"${payload?substring(11, 15)?trim}\", \"channelCode\": \"${payload?substring(15, 18)?trim}\", \"transactionCode\": \"${payload?substring(18, 22)?trim}\" } }",
+      "target": "ms_top_base",
+      "queue": "send.associate.top"
+    },
+    "TOPCLIENT01": {
+      "listener" : "id2",
+      "template" : "<#assign listTops = payload?substring(48)?trim><#assign partes = []><#assign longitud = listTops?length><#list 0..((longitud / 59)?int - 1) as i><#assign start = i * 59><#assign end = start + 59><#assign fragmento = listTops?substring(start, end)><#assign partes += [fragmento]></#list>{ \"data\": {\"topClient\": [<#list partes as p>{\"topCode\": \"${p?substring(0, 3)?trim}\" , \"clientDocumentNumber\": \"${payload?substring(11, 26)?trim}\", \"clientTypeDocument\": \"${payload?substring(26, 28)?trim}\" , \"numberOperations\": ${p?substring(3, 6)?number},  \"customAmount\": ${p?substring(6, 21)?number?replace(\".\", \"\")?replace(\",\", \"\")}.00, \"channelCode\": \"${p?substring(21, 24)?trim}\", \"channelTrx\": \"${p?substring(24, 27)?trim}\" , \"numberTransactionsMade\": \"${p?substring(27, 30)?trim}\", \"user\": \"${payload?substring(28, 48)?trim}\", \"accumulatedAmount\": ${p?substring(30, 45)?number?replace(\".\", \"\")?replace(\",\", \"\")}.00, \"transactionDate\": \"${p?substring(45, 49)?trim}-${p?substring(49, 51)?trim}-${p?substring(51, 53)?trim}T${p?substring(53, 55)?trim}:${p?substring(55, 57)?trim}:${p?substring(57, 59)?trim}\"}<#if p_has_next>,</#if></#list>]}}",
+      "target": "ms_top_custom",
+      "queue": "send.create.top_client"
+    },
+    "TOPCLIENT02": {
+      "listener" : "id1",
+      "template" : "",
+      "target": "ms_top_custom",
+      "queue": "send.get.top.client.iseries"
+    },
+    "TOPCLIENT03": {
+      "listener" : "id1",
+      "template" : "",
+      "target": "ms_top_custom",
+      "queue": "send.update.top.client.iseries"
+    },
+    "TOPCLIENT04": {
+      "listener" : "id1",
+      "template" : "",
+      "target": "ms_top_custom",
+      "queue": "send.delete.top.client.iseries"
+    },
+    "TOPCLIENT05": {
+      "listener" : "id1",
+      "template" : "{ \"clientDocumentNumber\": \"${payload?substring(36, 51)?trim}\", \"clientTypeDocument\": \"${payload?substring(51, 53)?trim}\", \"customTopsInfo\":[ { \"topCode\": \"${payload?substring(53, 57)?trim}\", \"topDescription\": \"${payload?substring(57, 157)?trim}\", \"channel\": \"${payload?substring(157, 160)?trim}\", \"currency\": \"${payload?substring(160, 260)?trim}\", \"amountPeriodicity\": \"${payload?substring(260, 275)?trim}\", \"operationsPeriodicity\": \"${payload?substring(275, 290)?trim}\",\"customAmount\": ${payload?substring(290, 305)?number?replace(\".\", \"\")?replace(\",\", \"\")}.${payload?substring(305, 307)},\"accumulatedAmount\": ${payload?substring(307, 322)?number?replace(\".\", \"\")?replace(\",\", \"\")}.${payload?substring(322, 324)},\"numberOperationsTop\": ${payload?substring(324, 327)?number}, \"numberOperationsAccumulated\": ${payload?substring(327, 330)?number} }]}",
+      "target": "ms_top_custom",
+      "queue": "send.get.top.client.iseries.accumulate"
+    },
+    "TOPCLIENT06": {
+      "listener" : "id1",
+      "template" : "{\"idResponse\": \"${payload?substring(36, 136)?trim}\"}",
+      "target": "ms_top_custom",
+      "queue": "send.update.top.client.iseries"
+    },
+    "TOPCLIENT07": {
+      "listener" : "id2",
+      "template" : "{ \"data\": {\"topClient\": [{\"clientDocumentNumber\": \"${payload?substring(11, 26)?trim}\", \"clientTypeDocument\": \"${payload?substring(26, 28)?trim}\" , \"user\": \"${payload?substring(28, 48)?trim}\" , \"topCode\": \"${payload?substring(48, 51)?trim}\" , \"numberOperations\": \"${payload?substring(51, 54)?trim}\", \"customAmount\": ${payload?substring(54, 67)?number?replace(\".\", \"\")?replace(\",\", \"\")}.${payload?substring(67, 69)?number?replace(\".\", \"\")?replace(\",\", \"\")}, \"channelCode\": \"${payload?substring(69, 72)?trim}\", \"channelTrx\": \"${payload?substring(72, 75)?trim}\", \"numberTransactionsMade\": \"${payload?substring(75, 78)?trim}\", \"accumulatedAmount\": ${payload?substring(78, 91)?number?replace(\".\", \"\")?replace(\",\", \"\")}.${payload?substring(91, 93)?number?replace(\".\", \"\")?replace(\",\", \"\")}, \"transactionDate\": \"${payload?substring(93, 97)?trim}-${payload?substring(97, 99)?trim}-${payload?substring(99, 101)?trim}T00:00:00\"}]}}",
+      "target": "ms_top_custom",
+      "queue": "send.create.top_client"
+    },
+    "TOPSERVC001": {
+      "listener" : "id2",
+      "template" : "{\"data\":{ \"iseriesRequest\":\"true\", \"correlationID\": \"${payload?substring(0,180)}\",\"customerDocumentType\": \"${payload?substring(191, 192)}\",\"customerDocumentNumber\": \"${payload?substring(192, 207)?trim}\",\"transactionCode\": \"${payload?substring(207, 211)}\",\"channelEnabled\": \"${payload?substring(211,214)}\",\"operationAmount\": ${payload?substring(214, 227)?number?replace(\".\", \"\")?replace(\",\", \"\")}.${payload?substring(227, 229)}}}",
+      "target": "ms_top_services",
+      "queue": "send.validate.top.cloud"
+    },
+    "TOPSERVC002": {
+      "listener" : "id2",
+      "template" : "{\"data\":{ \"iseriesRequest\":\"true\", \"correlationID\": \"${payload?substring(0,49)}\",\"customerDocumentType\": \"${payload?substring(11, 12)}\",\"customerDocumentNumber\": \"${payload?substring(12, 27)?trim}\",\"transactionCode\": \"${payload?substring(27, 31)}\",\"channelEnabled\": \"${payload?substring(31,34)}\",\"operationAmount\": ${payload?substring(34, 47)?number?replace(\".\", \"\")?replace(\",\", \"\")}.${payload?substring(47, 49)}}}",
+      "target": "ms_top_services",
+      "queue": "send.accumulate.top.cloud"
+    },
+    "TOPSERVC003": {
+      "listener" : "id2",
+      "template" : "{\"data\":{ \"iseriesRequest\":\"true\", \"correlationID\": \"${payload?substring(0,49)}\",\"customerDocumentType\": \"${payload?substring(11, 12)}\",\"customerDocumentNumber\": \"${payload?substring(12, 27)?trim}\",\"transactionCode\": \"${payload?substring(27, 31)}\",\"channelEnabled\": \"${payload?substring(31,34)}\",\"operationAmount\": ${payload?substring(34, 47)?number?replace(\".\", \"\")?replace(\",\", \"\")}.${payload?substring(47, 49)}}}",
+      "target": "ms_top_services",
+      "queue": "send.reverse.top.cloud"
+    },
+    "TOPSERVC0037": {
+      "listener" : "id1",
+      "template" : "",
+      "target": "ms_top_services",
+      "queue": "send.accumulate.top.iseries"
+    },
+    "TOPSERVC0038": {
+      "listener" : "id1",
+      "template" : "",
+      "target": "ms_top_services",
+      "queue": "send.reverse.top.iseries"
+    },
+    "TOPERROR001": {
+      "listener" : "id1",
+      "template" : "{\"message\": \"${payload?substring(11, 61)}\",\"reason\": null,\"domain\": null,\"code\": null}",
+      "queue": ""
+    },
+    "TOPCUSTOM01": {
+      "listener" : "id1",
+      "template" : "",
+      "target": "ms_top_custom",
+      "queue": "send.update.top.client.custom.iseries"
+    },
+    "TOPBASE0003": {
+      "listener" : "id2",
+      "template" : "{\"code\":\"${payload?substring(11, 15)?trim}\",\"amount\":${payload?substring(16, 29)},\"contingency\":${(payload?substring(16, 17) == \"S\")?}}",
+      "target": "ms_top_base",
+      "queue": "send.update.top"
+    }
+  }
+}

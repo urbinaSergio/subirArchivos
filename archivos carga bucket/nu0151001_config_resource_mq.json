@@ -1,0 +1,64 @@
+{
+  "data": [
+    {
+      "queryName": "send.get.top.client.iseries",
+      "channel": "TOPCLIENT",
+      "transaction": "02",
+      "template": "<#assign aDateTime = .now><#assign aDate = aDateTime?date>SG2TOP${clientDocumentNumber?right_pad(16, \" \")?substring(0, 16)}STIDQSG2R STILIBRAMD100${aDateTime?string[\"HHmmssSSS\"]?substring(0, 8)}000000000000000000000000050000100001 TS0041000000000000000000000000000000000000000000000000000000000000000000000000000000000000TOPCLIENT02${documentNumber?right_pad(20, \" \")?substring(0, 20)}${documentType?right_pad(2, \" \")}"
+    },
+    {
+      "queryName": "send.delete.top.client.iseries",
+      "channel": "TOPCLIENT",
+      "transaction": "04",
+      "template": "<#assign aDateTime = .now><#assign aDate = aDateTime?date>SG2TOP${clientDocumentNumber?right_pad(16, \" \")?substring(0, 16)}STIDQSG2R STILIBRAMD100${aDateTime?string[\"HHmmssSSS\"]?substring(0, 8)}000000000000000000000000050000100001 TS0041000000000000000000000000000000000000000000000000000000000000000000000000000000000000TOPCLIENT04${documentNumber?right_pad(20, \" \")?substring(0, 20)}${documentType?right_pad(2, \" \")}"
+    },
+    {
+      "queryName": "send.get.top.client.iseries.accumulate",
+      "channel": "TOPCLIENT",
+      "transaction": "05",
+      "template": "<#assign aDateTime = .now><#assign aDate = aDateTime?date>SG2TOP${correlationID?substring(0, 16)}STIDQSG2R STILIBRAMD100${aDateTime?string[\"HHmmssSSS\"]?substring(0, 8)}000000000000000000000000050000100001 TS0030${correlationID?substring(0, 20)}S000000000000000000000000000000000000000000000000000000000000000TOPCLIENT05${correlationID?substring(0, 25)}${clientDocumentNumber?left_pad(15, \"0\")?substring(0, 15)}${clientTypeDocument?left_pad(2, \"0\")}"
+    },
+    {
+      "queryName": "send.update.top.client.iseries",
+      "channel": "TOPCLIENT",
+      "transaction": "06",
+      "template": "<#assign aDateTime = .now><#assign aDate = aDateTime?date>SG2TOP${correlationID?substring(0, 16)}STIDQSG2R STILIBRAMD100${aDateTime?string[\"HHmmssSSS\"]?substring(0, 8)}000000000000000000000000050000100001 TS0031${correlationID?substring(0, 20)}S000000000000000000000000000000000000000000000000000000000000000TOPCLIENT06${correlationID?left_pad(25, \" \")}${topCode?left_pad(4, \"0\")}${clientTypeDocument?left_pad(2, \"0\")}${clientDocumentNumber?left_pad(15, \"0\")?substring(0, 15)}${customAmount?replace(\".\", \"\")?replace(\",\", \"\")?left_pad(17, \"0\")}${channelTrx?left_pad(3)}${createdDate?left_pad(4)?substring(0, 4)}${createdDate?left_pad(2)?substring(5, 7)}${createdDate?left_pad(2)?substring(8, 10)}${createdDate?left_pad(2)?substring(11, 13)}${createdDate?left_pad(2)?substring(14, 16)}${createdDate?left_pad(2)?substring(17, 19)}<#if user??>${user?left_pad(20)}<#else></#if>"
+    },
+    {
+      "queryName": "send.validate.top.cloud",
+      "channel": "TOPSERVC",
+      "transaction": "001",
+      "template": "${correlationID?substring(0,180)}TOPSERVC001${idResponse?left_pad(4, \"0\")}"
+    },
+    {
+      "queryName": "send.accumulate.top.cloud",
+      "channel": "TOPSERVC",
+      "transaction": "002",
+      "template": "${correlationID?substring(0,180)}TOPSERVC002${idResponse?left_pad(4, \"0\")}"
+    },
+    {
+      "queryName": "send.reverse.top.cloud",
+      "channel": "TOPSERVC",
+      "transaction": "003",
+      "template": "${correlationID?substring(0,180)}TOPSERVC003${idResponse?left_pad(4, \"0\")}"
+    },
+    {
+      "queryName": "send.accumulate.top.iseries",
+      "channel": "TOPSERVC",
+      "transaction": "0037",
+      "template": "<#assign aDateTime = .now><#assign aDate = aDateTime?date>SG2MTS${documentNumber?right_pad(16, \" \")?substring(0, 16)}STIDQSG2R STILIBRAMD100${aDateTime?string[\"HHmmssSSS\"]?substring(0, 8)}000000000000000000000000050000100001 TS0037${.now?string('yyyyMMddHHmmssSSS')?right_pad(20, '0')}N0000                                                           ${typeDocument?right_pad(1, \" \")?substring(0, 1)}${documentNumber?left_pad(15, \"0\")?substring(0,15)}${transactionCode?left_pad(4, \"0\")?substring(0,4)}${channel?left_pad(3, \"0\")?substring(0,3)}<#assign operationAmount = amount><#assign formattedAmount = operationAmount?string(\"0000000000000.00\")>${formattedAmount?replace(\".\", \"\")?replace(\",\", \"\")}NN      "
+    },
+    {
+      "queryName": "send.reverse.top.iseries",
+      "channel": "TOPSERVC",
+      "transaction": "0038",
+      "template": "<#assign aDateTime = .now><#assign aDate = aDateTime?date>SG2MTS${documentNumber?right_pad(16, \" \")?substring(0, 16)}STIDQSG2R STILIBRAMD100${aDateTime?string[\"HHmmssSSS\"]?substring(0, 8)}000000000000000000000000050000100001 TS0038${.now?string('yyyyMMddHHmmssSSS')?right_pad(20, '0')}N0000                                                           ${typeDocument?right_pad(1, \" \")?substring(0, 1)}${documentNumber?left_pad(15, \"0\")?substring(0,15)}${transactionCode?left_pad(4, \"0\")?substring(0,4)}${channel?left_pad(3, \"0\")?substring(0,3)}<#assign operationAmount = amount><#assign formattedAmount = operationAmount?string(\"0000000000000.00\")>${formattedAmount?replace(\".\", \"\")?replace(\",\", \"\")}      "
+    },
+    {
+      "queryName": "send.update.top.client.custom.iseries",
+      "channel": "TOPCUSTOM",
+      "transaction": "01",
+      "template": "<#assign transactionDateStr = transactionDate?split('T')><#assign aDateTime = .now><#assign aDate = aDateTime?date>SG2MTS${identification.clientDocumentNumber?right_pad(16, \" \")?substring(0, 16)}STIDQSG2R STILIBRAMD100${aDateTime?string[\"HHmmssSSS\"]?substring(0, 8)}000000000000000000000000050000100001 TS0034${.now?string('yyyyMMddHHmmssSSS')?right_pad(20, '0')}N0000                                                           TOPCUSTOM01${identification.clientTypeDocument?left_pad(2, \"0\")?substring(0, 2)}${identification.clientDocumentNumber?left_pad(15, \"0\")?substring(0, 15)}${topClients[0].channelTrx?left_pad(3, \" \")?substring(0, 3)}${topClients[0].user?left_pad(10, \" \")?substring(0, 10)}${messageId?string?replace('.', '')?left_pad(6, '0')}${transactionDateStr[0]?replace('-', '')}${transactionDateStr[1]?replace(':', '')?substring(0, 6)}<#list topClients as client>${client.channel?left_pad(3, \" \")?substring(0, 3)}${client.topCode?left_pad(3, \"0\")?substring(0, 3)}${client.numberOperations?left_pad(3, \"0\")?substring(0, 3)}${client.customAmount?replace(\".\", \"\")?replace(\",\", \"\")?left_pad(15, \"0\")}</#list>"
+    }
+  ]
+}

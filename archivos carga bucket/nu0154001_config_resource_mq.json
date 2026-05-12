@@ -1,0 +1,25 @@
+{
+  "data": [
+    {
+      "queryName": "send.create.iseries",
+      "channel": "ALERTAS",
+      "transaction": "0041",
+      "template": "<#assign aDateTime = .now><#assign aDate = aDateTime?date>SG3ALE${documentNumber?right_pad(16, \" \")?substring(0, 16)}STIDQSG3ENSTILIBRAMD100${aDateTime?string[\"HHmmssSSS\"]?substring(0, 8)}000000000000000000000000050000100001 TS0041000000000000000000000000000000000000000000000000000000000000000000000000000000000000${documentNumber?right_pad(20, \" \")?substring(0, 20)}${documentType?right_pad(2, \" \")}${channel?right_pad(3, \" \")}${valueSms?right_pad(20, \" \")}${valueEmail?right_pad(60, \" \")}${statePush?right_pad(1, \" \")?replace(\"1\",\"A\")?replace(\"0\",\"I\")}${voucher?right_pad(10, \" \")}${date}${creationUser?right_pad(20, \" \")}",
+      "domain": "app"
+    },
+    {
+      "queryName": "send.update.iseries",
+      "channel": "ALERTAS",
+      "transaction": "0050",
+      "template": "<#assign aDateTime = .now><#assign aDate = aDateTime?date>SG3ALE${documentNumber?right_pad(16, \" \")?substring(0, 16)}STIDQSG3ENSTILIBRAMD100${aDateTime?string[\"HHmmssSSS\"]?substring(0, 8)}000000000000000000000000050000100001 TS0050000000000000000000000000000000000000000000000000000000000000000000000000000000000000${documentNumber?right_pad(20, \" \")?substring(0, 20)}${documentType?right_pad(2, \" \")}${channel?right_pad(3, \" \")}${stateSms?right_pad(1, \" \")}${valueSms?right_pad(20, \" \")}${stateEmail?right_pad(1, \" \")}${valueEmail?right_pad(60, \" \")}${statePush?right_pad(1, \" \")?replace(\"1\",\"A\")?replace(\"0\",\"I\")}${statePush?right_pad(1, \" \")?replace(\"1\",\"A\")?replace(\"0\",\"I\")}${voucher?right_pad(10, \" \")}${date}${creationUser?right_pad(20, \" \")}",
+      "domain": "app"
+    },
+    {
+      "queryName": "save.log.send.alert.sending",
+      "channel": "ALERTAS",
+      "transaction": "0060",
+      "template": "<#assign aDateTime = .now><#assign aDate = aDateTime?date>SG3ALE${documentNumber?right_pad(16, \"0\")?substring(0, 16)}STIDQSG3ENSTILIBRAMD100${aDateTime?string[\"HHmmssSSS\"]?substring(0, 8)}000000000000000000000000050000100001 TS0002000000000000000000000000000000000000000000000000000000000000000000000000000000000000${documentType?right_pad(4, \" \")?substring(0, 4)}${documentNumber?right_pad(15, \" \")?substring(0, 15)}${logKey?right_pad(30, \" \")?substring(0, 30)}${logType?right_pad(4, \" \")?substring(0, 4)}${medium?replace(\"PUSH\",\"P\")?replace(\"SMS\",\"M\")?replace(\"EMAIL\",\"C\")}${contact?right_pad(60, \" \")?substring(0, 60)}${messageSent?right_pad(250, \" \")?substring(0, 250)}${consumer?right_pad(10, \" \")?substring(0, 10)}${alertId?right_pad(3, \" \")?substring(0, 3)}${alertDescription?right_pad(30, \" \")?substring(0, 30)}${dateCreation?substring(0, 10)?replace(\"-\",\"\")?right_pad(8, \" \")}${dateCreation?substring(11, 19)?replace(\":\",\"\")?right_pad(10, \" \")}${transactionId?right_pad(4, \" \")?substring(0, 4)}${amount?right_pad(18, \" \")?substring(0, 18)}${responseCode?right_pad(4, \" \")?substring(0, 4)}${responseDescription?right_pad(50, \" \")?substring(0, 50)}${priority?right_pad(4, \" \")?substring(0, 4)}${template?right_pad(40, \" \")?substring(0, 40)} ${messageId?right_pad(30, \" \")?substring(0, 30)}${provider?right_pad(20, \" \")?substring(0, 20)}",
+      "domain": "log"
+    }
+  ]
+}

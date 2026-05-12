@@ -1,0 +1,8 @@
+{   
+    "dbname": "alertaslogslocal",
+    "schema": "schalerd",
+    "username": "postgres",
+    "password": "andres1998",
+    "host": "localhost",
+    "port": 5432
+}

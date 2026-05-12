@@ -1,0 +1,8 @@
+{   
+    "dbname": "alerldcd",
+    "schema": "schalerd",
+    "username": "nasuarez",
+    "password": "27Aort3G4lvQJVEkR",
+    "host": "nu0154001-alertas-logs-dev-clusteraurora.cluster-cuudzr7pgeql.us-east-1.rds.amazonaws.com",
+    "port": 5432
+}
