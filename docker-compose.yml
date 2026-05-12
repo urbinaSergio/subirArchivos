@@ -1,0 +1,67 @@
+services:
+  redis-server:
+    image: redis:latest
+    container_name: redis_email
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:14.9
+    container_name: postgres-topes
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "12345"
+      POSTGRES_DB: alertaslocal
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./postgres-scripts:/docker-entrypoint-initdb.d
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "127.0.0.1:4566:4566"         # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559" # External services port range
+    environment:
+      DEBUG: "1"
+      PERSISTENCE: "1"
+      DOCKER_HOST: unix:///var/run/docker.sock
+    volumes:
+      - data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmqdual
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    networks:
+      - rabbitmq_go_net
+    volumes:
+      - ./rabbitmq/etc/definitions.json:/etc/rabbitmq/definitions.json
+      - ./rabbitmq/etc/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
+      - ./rabbitmq/logs:/var/log/rabbitmq/log
+      
+  rabbitmq-dual:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - rabbitmq_go_net
+    volumes:
+      - ./rabbitmq/etc/definitions.json:/etc/rabbitmq/definitions.json
+      - ./rabbitmq/etc/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
+      - ./rabbitmq/logs:/var/log/rabbitmq/log
+
+networks:
+  rabbitmq_go_net:
+    driver: bridge
+
+volumes:
+  data:

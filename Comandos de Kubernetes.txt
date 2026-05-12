@@ -1,0 +1,130 @@
+----------------------------------- KUBERNETES COMMANDS D2B-----------------------------------
+
+-- configurar eks d2b
+- aws eks update-kubeconfig --name eks-canales-digitales-dev --region us-east-1 --no-verify-ssl
+- aws eks update-kubeconfig --name eks-canales-digitales-qa --region us-east-1 --no-verify-ssl
+- aws eks update-kubeconfig --name eks-canales-digitales-pdn --region us-east-1 --no-verify-ssl
+
+-- listar pods
+kubectl top pod -n alertas-dev
+- kubectl get pod -n alertas-dev -o wide -w
+- kubectl get pod -n alertas-qa -o wide -w
+- kubectl get pod -n gestion-envio-pdn -o wide -w
+
+-- borrar pods de un microservicio
+- kubectl delete pods -n topes-qa -l pod=top-services-pod
+
+-- ver logs del post
+kubectl logs -n alertas-dev sms-management-deployment-6cb654bc9b-pm2rg
+- kubectl logs -n gestion-envio-dev splitter-deployment-7b95d6678f-95g8x
+- kubectl logs -n alertas-qa -f filter-captcha-deployment-56fb588994-gbhrl -c filter-captcha-container -f
+- kubectl logs -n alertas-pdn -f ch-ms-authentication-blm-deployment-84cf6b766-4h8c6 -c ch-ms-authentication-blm-container
+- kubectl logs -n alm-qa ds-ms-deposits-deployment-85d8748b56-lqnf6 -c ds-ms-deposits-container -f
+
+-- informacion del pod
+- kubectl describe pods -n topes-pdn functional-adapter-deployment-8b49ff94c-7bpj5
+
+
+-- list deployments
+- kubectl get deployment -n alm-qa
+
+-- delete deployment
+- kubectl delete deploy/functional-adapter-deployment -n alertas-dev
+- kubectl delete deploy/log_management-deployment -n alertas-dev
+- kubectl delete deploy/alert-management-deployment -n alertas-dev
+- kubectl delete deploy/contact-management-deployment -n alertas-qa
+
+-- view deployment
+- kubectl get deployment authentication-blm-deployment -o yaml -n alm-qa
+
+-- listar virtual services
+- kubectl get vs -n alm-dev
+- kubectl get vs -n alm-qa
+- kubectl get vs -n alm-pdn
+
+-- informacion del virtual service
+- kubectl describe -n alm-pdn vs ch-ms-authentication-blm-vs-2
+- kubectl describe -n alm-dev vs ds-ms-deposits-vs-2
+- kubectl describe -n topes-pdn vs top-services-vs-2
+
+-- delete virtual service
+- kubectl delete vs deposits-vs-2 -n alm-qa
+
+-- ingresar al container y ver que puertos esta usando un pod
+- kubectl exec -it -n alm-qa authorization-services-deployment-846b9bbcd9-rdz6c -- ash
+- netstat -putan
+- printenv
+
+-- informacion del servicio de una aplicacion
+- kubectl describe svc -n alm-qa ds-ms-deposits
+
+
+-- Delete pods for pipeline
+- https://grupobancolombia.visualstudio.com/Vicepresidencia%20Servicios%20de%20Tecnolog%C3%ADa/_build?definitionId=10779&_a=summary
+- name cluster: eks-admin-dev
+
+-- list hpa pods
+- kubectl get hpa -w -n alertas-dev
+- kubectl get hpa -w -n alertas-qa
+
+-- view hpa
+- kubectl describe hpa ds-ms-deposits-hpa -n alm-pdn
+
+-- delete hpa
+- kubectl delete hpa ds-ms-deposits-hpa -n alm-qa
+
+-- top resources
+- kubectl top pod -n alm-qa
+- kubectl top pod -n alm-pdn
+
+-- delete pod
+- kubectl delete pod -n alm-qa authorization-services-deployment-846b9bbcd9-q9sst
+- kubectl delete pods -n alm-pdn -l pod=authorization-services-pod
+
+-- execute sh
+- .\prueba.sh kubectl top pod -n alm-pdn
+
+-- delete deploy
+- kubectl  -n alm-qa delete deploy/ds-ms-deposits-deployment
+
+-- list gateway
+- kubectl get gw -n alm-dev
+- kubectl get gw -n alm-qa
+- kubectl get gw -n alm-pdn
+
+-- describe gateway 
+- kubectl describe gw -n alm-qa alm-gateway
+
+-- delete gateway
+- kubectl delete gw -n alm-qa ds-ms-deposits-gateway
+
+-- list services
+- kubectl get service -n alm-qa
+- kubectl get service -n alm-pdn
+
+-- describe service
+- kubectl describe service -n alm-qa ch-ms-authentication-blm
+ 
+-- describe container
+- kubectl describe -n alm-qa container ds-ms-deposits-container
+
+-- list deployments
+- kubectl get deployment -n alm-qa
+
+- describe deployment
+- kubectl -n alm-pdn describe deployment security-filters-2-deployment
+
+-- list events eks
+-  kubectl get events -n alm-qa
+
+-- list configmaps
+- kubectl get configmaps -n alm-qa
+
+-- view configmap of pod
+- kubectl describe configmaps -n alm-qa ch-ms-authentication-blm-configmap
+
+-- delete configmap
+- kubectl delete configmap authentication-blm2-configmap -n alm-qa
+
+-- list all resource kubernetes
+- kubectl get all -n alm-qa

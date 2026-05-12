@@ -1,0 +1,7 @@
+TypeId;UserId;PhoneIndicator;Phone;Template;Data;Url;Message
+|SVP;MAS;3;;;;;
+CC;5828702685;+57;3004873880;100019;"{""C1"":""avión"",""C0"":""casa""}";;Mensaje SMS de prueba Masiv 2
+CC;7869841694;+57;3177833860;100018;"{""C1"":""Datos"",""C0"":""computador""}";https://shorturl.at/bDOZ7;Mensaje SMS de prueba Masiv 1. Más información en
+CC;2671994195;+57;3146227042;100019;"{""C1"":""teclado"",""C0"":""mouse""}";https://shorturl.at/ciFL1;Mensaje SMS de prueba Masiv 4. Más información en
+CC;8728342272;+57;3144823086;100019;"{""C1"":""beneficios"",""C0"":""Carro""}";https://shorturl.at/bcvS9;Mensaje SMS de prueba Masiv 3, Conoce más información en
+CC;1234567896;+57;3172550373;100019;"{""C1"":""teclado"",""C0"":""mouse""}";;Mensaje SMS de prueba Masiv 5

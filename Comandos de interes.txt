@@ -1,0 +1,26 @@
+Ejecución de pruebas unitarias
+gradlew clean jacocoMergedReport
+
+----------------------------------------------------AWS----------------------------------------------------
+eliminar secreto
+aws --endpoint-url=http://localhost:4566 secretsmanager delete-secret --secret-id aw0955-topes-local-postgres-engagement-topes
+
+Crear bucket
+aws --endpoint-url=http://localhost:4566 s3 mb s3://bucketSsl
+
+Cargar archivo de bucket
+aws --endpoint-url=http://localhost:4566 cp aw0955-topes-local-postgres-engagement-topes s3://bucketSsl
+
+Eliminar archivo de bucket
+aws --endpoint-url=http://localhost:4566 rm s3://bucketSsl/aw0955-topes-local-postgres-engagement-topes
+
+Buscar Puerto ocupado
+netstat -aon | find "1099"
+
+
+----------------------------------------------------DOCKER----------------------------------------------------
+-Detener todos los contenedores
+docker stop $(docker ps -aq)
+
+-Eliminar todos los contenedores
+docker rm $(docker ps -aq)

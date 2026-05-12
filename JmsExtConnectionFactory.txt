@@ -1,0 +1,67 @@
+package co.com.bancolombia.ibmmq.jms;
+
+import co.com.bancolombia.commons.enums.TechnicalExceptionEnum;
+import co.com.bancolombia.commons.exceptions.TechnicalException;
+import co.com.bancolombia.ibmmq.model.ConnectionDTO;
+import co.com.bancolombia.model.log.LoggerBuilder;
+import com.ibm.mq.jms.MQConnectionFactory;
+import com.ibm.msg.client.jms.JmsConnectionFactory;
+import com.ibm.msg.client.jms.JmsFactoryFactory;
+import com.ibm.msg.client.wmq.WMQConstants;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.jms.JMSException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.ibm.msg.client.jms.JmsConstants.PASSWORD;
+import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_CM_CLIENT;
+import static com.ibm.msg.client.wmq.common.CommonConstants.WMQ_TEMPORARY_MODEL;
+
+@Component
+@RequiredArgsConstructor
+public class JmsExtConnectionFactory {
+
+    private final LoggerBuilder loggerBuilder;
+
+    private Map<String, JmsConnectionFactory> mapConnFactory;
+
+    @PostConstruct
+    private void init() {
+        mapConnFactory = new HashMap<>();
+    }
+
+    public JmsConnectionFactory connectionFactory(ConnectionDTO conn) {
+        if (!mapConnFactory.containsKey(conn.getName())) {
+            try {
+                System.setProperty("com.ibm.mq.cfg.useIBMCipherMappings", "false");
+                JmsFactoryFactory ff = JmsFactoryFactory.getInstance(WMQConstants.WMQ_PROVIDER);
+                JmsConnectionFactory cf = ff.createConnectionFactory();
+                cf.setIntProperty(WMQConstants.WMQ_CONNECTION_MODE, WMQ_CM_CLIENT);
+                cf.setStringProperty(WMQConstants.WMQ_QUEUE_MANAGER, conn.getQmGroup());
+                cf.setStringProperty(WMQConstants.USERID, "admin");
+                if (conn.getTemporaryQueueModel() != null) {
+                    cf.setStringProperty(WMQ_TEMPORARY_MODEL, conn.getTemporaryQueueModel());
+                }
+
+                cf.setStringProperty(PASSWORD, "passw0rd");
+
+                MQConnectionFactory mqConnection = (MQConnectionFactory) cf;
+                mqConnection.setHostName("localhost");
+                mqConnection.setQueueManager("QM1");
+                mqConnection.setPort(1414);
+                mqConnection.setChannel("DEV.ADMIN.SVRCONN");
+                mqConnection.setTransportType(WMQConstants.WMQ_CM_CLIENT);
+                mqConnection.setCCSID(1208);
+                return mqConnection;
+            } catch (JMSException e) {
+                loggerBuilder.error(e);
+                throw new TechnicalException(e, TechnicalExceptionEnum.TECHNICAL_MQ_ERROR);
+            }
+        }
+        return mapConnFactory.get(conn.getName());
+    }
+
+}

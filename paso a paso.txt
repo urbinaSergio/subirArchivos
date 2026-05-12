@@ -1,0 +1,7 @@
+1:	Abrir wsl en esta carpeta
+2:	Ejecutar el siguiente comando ./init.sh
+
+
+PASO A PASO PARA INICIAR MICROSERVICIO FUNCTIONAL ADAPTER
+1:	Reemplazar el contenido de la calse JmsExtConnectionFactory por lo definido en 
+	el archivo JmsExtConnectionFactory en esta carpeta
